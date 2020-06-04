@@ -1,0 +1,78 @@
+<html>
+<head>
+<script>
+
+var inputSize = 0;
+
+function changed() {
+   var input = document.getElementById('input').value;
+   if (input && input.length != inputSize) {
+       inputSize = input.length;
+       var allEmails = {};
+       var invalid = [];
+       input.split('\n').forEach(l => l.split('\t').forEach(l2 => l2.split(',').forEach(l3 => l3.split(' ').map(i=>i.trim()).filter(i=>i).forEach(email => {
+         if (email.indexOf('@') == -1) {
+             invalid.push(email);
+         } else {
+            email = email.replace(/['"]/g, '');
+            if (!allEmails[email]) {
+              allEmails[email] = 0;
+            }
+            allEmails[email] = allEmails[email] + 1;
+         }
+       }))));
+
+       var count = 0;
+       var dupeCount = 0;
+       var select = document.body.querySelector('select');
+       select.innerHTML = "";
+       var emails = [];
+       for (var email in allEmails) {
+         count++;
+         dupeCount = dupeCount + allEmails[email] - 1;
+         emails.push(email);
+       }
+       emails.sort();
+       for (var i=0; i < emails.length; i++) {
+         var opt = document.createElement('option');
+         opt.innerHTML = emails[i];
+         select.appendChild(opt);
+       }
+       document.getElementById('count').innerHTML = count;
+       document.getElementById('dupes').innerHTML = dupeCount;
+       if (invalid.length) {
+         document.getElementById('invalid').className = "";
+         document.body.querySelector('#invalid textarea').value = invalid.join("\n")
+       } else {
+         document.getElementById('invalid').className = "";
+       }
+   }
+}
+
+</script>
+<style>
+.hide { display: none; }
+.float { float: left; margin-left:10px; }
+
+#input, select { width: 500px; height: 400px; }
+
+</style>
+</head>
+<body>
+<div class="float">
+<textarea id="input" onchange="changed()" onkeypress="changed()"></textarea>
+</div>
+
+<div class="float">
+Count: <span id="count"></span><br/>
+Dups#: <span id="dupes"></span><br/>
+</div>
+<div class="float">
+<select multiple>
+<option>something</option>
+</select>
+</div>
+
+<div id="invalid" class="hide">invalid
+<textarea></textarea>
+</div>
