@@ -6,7 +6,7 @@ var inputSize = 0;
 
 function changed() {
    var input = document.getElementById('input').value;
-   if (input && input.length != inputSize) {
+   if (input.length != inputSize) {
        inputSize = input.length;
        var allEmails = {};
        var invalid = [];
@@ -44,7 +44,7 @@ function changed() {
          document.getElementById('invalid').className = "";
          document.body.querySelector('#invalid textarea').value = invalid.join("\n")
        } else {
-         document.getElementById('invalid').className = "";
+         document.getElementById('invalid').className = "hide";
        }
    }
 }
@@ -58,14 +58,14 @@ function changed() {
 
 </style>
 </head>
-<body>
+<body onpaste="changed()">
 <div class="float">
-<textarea id="input" onchange="changed()" onkeypress="changed()"></textarea>
+<textarea id="input" onkeyup="changed()" onpaste="changed()" onchange="changed()" onkeypress="changed()"></textarea>
 </div>
 
 <div class="float">
 Count: <span id="count"></span><br/>
-Dups#: <span id="dupes"></span><br/>
+Dupes: <span id="dupes"></span><br/>
 </div>
 <div class="float">
 <select multiple>
