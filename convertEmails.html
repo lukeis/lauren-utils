@@ -24,8 +24,8 @@ function changed() {
 
        var count = 0;
        var dupeCount = 0;
-       var select = document.body.querySelector('select');
-       select.innerHTML = "";
+       var target = document.getElementById('unique');
+       target.value = "";
        var emails = [];
        for (var email in allEmails) {
          count++;
@@ -33,15 +33,11 @@ function changed() {
          emails.push(email);
        }
        emails.sort();
-       for (var i=0; i < emails.length; i++) {
-         var opt = document.createElement('option');
-         opt.innerHTML = emails[i];
-         select.appendChild(opt);
-       }
+       target.value = emails.join("\n");
        document.getElementById('count').innerHTML = count;
        document.getElementById('dupes').innerHTML = dupeCount;
        if (invalid.length) {
-         document.getElementById('invalid').className = "";
+         document.getElementById('invalid').className = "float";
          document.body.querySelector('#invalid textarea').value = invalid.join("\n")
        } else {
          document.getElementById('invalid').className = "hide";
@@ -54,7 +50,7 @@ function changed() {
 .hide { display: none; }
 .float { float: left; margin-left:10px; }
 
-#input, select { width: 500px; height: 400px; }
+textarea { width: 500px; height: 400px; }
 
 </style>
 </head>
@@ -68,11 +64,12 @@ Count: <span id="count"></span><br/>
 Dupes: <span id="dupes"></span><br/>
 </div>
 <div class="float">
-<select multiple>
-<option>emails will show up here after pasted in the first text area</option>
-</select>
+<textarea id="unique">
+emails will show up here after pasted in the first text area
+</textarea>
 </div>
 
-<div id="invalid" class="hide">invalid
+<div id="invalid" class="float hide">
+<div class="float">invalid&nbsp;</div>
 <textarea></textarea>
 </div>
