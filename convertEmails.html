@@ -3,34 +3,46 @@
 <script>
 
 var inputSize = 0;
-
+   
 function changed() {
    var input = document.getElementById('input').value;
    if (input.length != inputSize) {
        inputSize = input.length;
        var allEmails = {};
        var invalid = [];
-       input.split('\n').forEach(l => l.split('\t').forEach(l2 => l2.split(',').forEach(l3 => l3.split(' ').map(i=>i.trim()).filter(i=>i).forEach(email => {
+       var dupeCount = 0;
+       var byMerch = !!document.getElementById('bymerch').checked;
+       input.split('\n').forEach(l => {
+          let merch = "",tabs=l.split('\t');
+          if (byMerch) {
+             merch = tabs[0];
+          }
+          tabs.forEach(l2 => l2.split(',').forEach(l3 => l3.split(' ').map(i=>i.trim()).filter(i=>i).forEach(email => {
          if (email.indexOf('@') == -1) {
              invalid.push(email);
          } else {
             email = email.replace(/['"]/g, '');
-            if (!allEmails[email]) {
-              allEmails[email] = 0;
+            if (!allEmails[merch]) {
+               allEmails[merch] = new Set();
             }
-            allEmails[email] = allEmails[email] + 1;
+            if (allEmails[merch].has(email)) dupeCount++;
+            allEmails[merch].add(email);
          }
-       }))));
+       })))});
 
        var count = 0;
-       var dupeCount = 0;
        var target = document.getElementById('unique');
        target.value = "";
        var emails = [];
-       for (var email in allEmails) {
-         count++;
-         dupeCount = dupeCount + allEmails[email] - 1;
-         emails.push(email);
+       for (var merch in allEmails) {
+         allEmails[merch].forEach((email) => {
+            count++;
+            if (byMerch) {
+               emails.push(`${merch}\t${email}`);
+            } else {
+               emails.push(email);
+            }
+         });
        }
        emails.sort();
        target.value = emails.join("\n");
@@ -56,6 +68,7 @@ textarea { width: 500px; height: 400px; }
 </head>
 <body onpaste="changed()">
 <div class="float">
+   <input type="checkbox" id="bymerch"/> By Merchant<br/>
 <textarea id="input" onkeyup="changed()" onpaste="changed()" onchange="changed()" onkeypress="changed()"></textarea>
 </div>
 
