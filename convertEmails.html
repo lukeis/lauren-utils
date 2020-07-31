@@ -15,7 +15,7 @@ function changed() {
        input.split('\n').forEach(l => {
           let merch = "",tabs=l.split('\t');
           if (byMerch) {
-             merch = tabs[0];
+             merch = tabs[0].trim();
           }
           tabs.forEach(l2 => l2.split(',').forEach(l3 => l3.split(' ').map(i=>i.trim()).filter(i=>i).forEach(email => {
          if (email.indexOf('@') == -1) {
